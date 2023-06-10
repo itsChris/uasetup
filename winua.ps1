@@ -98,7 +98,7 @@ New-Item -ItemType Directory -Path $Env:SystemDrive\Solvia
 
 # Continuously check for internet connection until there is one
 while (!(Test-InternetConnection)) {
-    [void] [MyMessageBox]::Show(0, "Please connect the computer to the internet", "No internet connection", 0)
+    [void] [MyMessageBox]::Show(0, "Please connect the computer to the internet  (maybe a driver is missing..)", "No internet connection", 0)
     Start-Sleep -Seconds 5
 }
 
