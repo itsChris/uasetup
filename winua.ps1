@@ -1,5 +1,4 @@
 #Requires -Version 3.0
-
 # Configure a Windows host
 # ------------------------
 #
@@ -27,7 +26,22 @@ function Test-InternetConnection {
         return $false
     }
 }
+Function Print-Welcome {
+Write-Host "
+ _______  _______  _                _________ _______ 
+(  ____ \(  ___  )( \      |\     /|\__   __/(  ___  )
+| (    \/| (   ) || (      | )   ( |   ) (   | (   ) |
+| (_____ | |   | || |      | |   | |   | |   | (___) |
+(_____  )| |   | || |      ( (   ) )   | |   |  ___  |
+      ) || |   | || |       \ \_/ /    | |   | (   ) |
+/\____) || (___) || (____/\  \   /  ___) (___| )   ( |
+\_______)(_______)(_______/   \_/   \_______/|/     \|
 
+Solution by Solvia
+https://www.solvia.ch
+info@solvia.ch" -ForegroundColor Cyan
+
+}
 # Setup error handling.
 Trap {
     $_
@@ -35,7 +49,7 @@ Trap {
 }
 $ErrorActionPreference = "Stop"
 
-Write-Host "Hi!"
+Print-Welcome
 
 # Get the ID and security principal of the current user account
 $myWindowsID = [System.Security.Principal.WindowsIdentity]::GetCurrent()
