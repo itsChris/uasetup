@@ -1,21 +1,35 @@
-#Requires -Version 3.0
 # Configure a Windows host
 # ------------------------
 #
 # This script is used to finalize the setup of a Windows computer
+# _______  _______  _                _________ _______ 
+#(  ____ \(  ___  )( \      |\     /|\__   __/(  ___  )
+#| (    \/| (   ) || (      | )   ( |   ) (   | (   ) |
+#| (_____ | |   | || |      | |   | |   | |   | (___) |
+#(_____  )| |   | || |      ( (   ) )   | |   |  ___  |
+#      ) || |   | || |       \ \_/ /    | |   | (   ) |
+#/\____) || (___) || (____/\  \   /  ___) (___| )   ( |
+#\_______)(_______)(_______/   \_/   \_______/|/     \|
+#
+#Solution by Solvia
+#https://www.solvia.ch
+#info@solvia.ch
+
 Add-Type -TypeDefinition @"
 using System;
 using System.Runtime.InteropServices;
-public class MessageBox {
+public class MyMessageBox {
 [DllImport("user32.dll", CharSet = CharSet.Auto)]
-public static extern uint MessageBox(IntPtr hWnd, String text, String caption, uint type);
+public static extern uint Show(IntPtr hWnd, String text, String caption, uint type);
 }
 "@
+
 # Function to check for internet connection
 function Test-InternetConnection {
     param(
         $URL = "http://www.google.com"
     )
+
     try {
         $request = [net.WebRequest]::Create($URL)
         $request.Method = "GET"
