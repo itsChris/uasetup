@@ -15,45 +15,20 @@
 #https://www.solvia.ch
 #info@solvia.ch
 
-Add-Type -TypeDefinition @"
-using System;
-using System.Runtime.InteropServices;
-public class MyMessageBox {
-[DllImport("user32.dll", CharSet = CharSet.Auto)]
-public static extern uint Show(IntPtr hWnd, String text, String caption, uint type);
-}
-"@
-
-# Function to check for internet connection
-function Test-InternetConnection {
-    param(
-        $URL = "http://www.google.com"
-    )
-
-    try {
-        $request = [net.WebRequest]::Create($URL)
-        $request.Method = "GET"
-        $response = $request.GetResponse()
-        return $true
-    }
-    catch {
-        return $false
-    }
-}
 Function Print-Welcome {
-Write-Host "
- _______  _______  _                _________ _______ 
-(  ____ \(  ___  )( \      |\     /|\__   __/(  ___  )
-| (    \/| (   ) || (      | )   ( |   ) (   | (   ) |
-| (_____ | |   | || |      | |   | |   | |   | (___) |
-(_____  )| |   | || |      ( (   ) )   | |   |  ___  |
-      ) || |   | || |       \ \_/ /    | |   | (   ) |
-/\____) || (___) || (____/\  \   /  ___) (___| )   ( |
-\_______)(_______)(_______/   \_/   \_______/|/     \|
+    Write-Host "
+    _______  _______  _                _________ _______ 
+    (  ____ \(  ___  )( \      |\     /|\__   __/(  ___  )
+    | (    \/| (   ) || (      | )   ( |   ) (   | (   ) |
+    | (_____ | |   | || |      | |   | |   | |   | (___) |
+    (_____  )| |   | || |      ( (   ) )   | |   |  ___  |
+        ) || |   | || |       \ \_/ /    | |   | (   ) |
+    /\____) || (___) || (____/\  \   /  ___) (___| )   ( |
+    \_______)(_______)(_______/   \_/   \_______/|/     \|
 
-Solution by Solvia
-https://www.solvia.ch
-info@solvia.ch" -ForegroundColor Cyan
+    Solution by Solvia
+    https://www.solvia.ch
+    info@solvia.ch" -ForegroundColor Cyan
 
 }
 # Setup error handling.
@@ -62,12 +37,12 @@ Trap {
     Exit 1
 }
 $ErrorActionPreference = "Stop"
-
+# Print Welcome
 Print-Welcome
 
 # Get the ID and security principal of the current user account
 $myWindowsID = [System.Security.Principal.WindowsIdentity]::GetCurrent()
-$myWindowsPrincipal = new-object System.Security.Principal.WindowsPrincipal($myWindowsID)
+$myWindowsPrincipal = New-Object System.Security.Principal.WindowsPrincipal($myWindowsID)
 
 # Get the security principal for the Administrator role
 $adminRole = [System.Security.Principal.WindowsBuiltInRole]::Administrator
@@ -96,14 +71,5 @@ If ($PSVersionTable.PSVersion.Major -lt 3) {
 
 New-Item -ItemType Directory -Path $Env:SystemDrive\Solvia
 
-# Continuously check for internet connection until there is one
-while (!(Test-InternetConnection)) {
-    [void] [MyMessageBox]::Show(0, "Please connect the computer to the internet  (maybe a driver is missing..)", "No internet connection", 0)
-    Start-Sleep -Seconds 5
-}
-
 Invoke-WebRequest -Uri "https://download.anydesk.com/AnyDesk.exe" -OutFile $Env:SystemDrive\Solvia\AnyDesk.exe
 Start-Process -FilePath "C:\Solvia\AnyDesk.exe"
-
-
-
