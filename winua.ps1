@@ -4,6 +4,29 @@
 # ------------------------
 #
 # This script is used to finalize the setup of a Windows computer
+Add-Type -TypeDefinition @"
+using System;
+using System.Runtime.InteropServices;
+public class MessageBox {
+[DllImport("user32.dll", CharSet = CharSet.Auto)]
+public static extern uint MessageBox(IntPtr hWnd, String text, String caption, uint type);
+}
+"@
+# Function to check for internet connection
+function Test-InternetConnection {
+    param(
+        $URL = "http://www.google.com"
+    )
+    try {
+        $request = [net.WebRequest]::Create($URL)
+        $request.Method = "GET"
+        $response = $request.GetResponse()
+        return $true
+    }
+    catch {
+        return $false
+    }
+}
 
 # Setup error handling.
 Trap {
@@ -44,6 +67,13 @@ If ($PSVersionTable.PSVersion.Major -lt 3) {
 }
 
 New-Item -ItemType Directory -Path $Env:SystemDrive\Solvia
+
+# Continuously check for internet connection until there is one
+while (!(Test-InternetConnection)) {
+    [void] [MessageBox]::MessageBox(0, "Please connect the computer to the internet (maybe a driver is missing..)", "No internet connection", 0)
+    Start-Sleep -Seconds 5
+}
+
 Invoke-WebRequest -Uri "https://download.anydesk.com/AnyDesk.exe" -OutFile $Env:SystemDrive\Solvia\AnyDesk.exe
 Start-Process -FilePath "C:\Solvia\AnyDesk.exe"
 
