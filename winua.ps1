@@ -42,3 +42,10 @@ If ($PSVersionTable.PSVersion.Major -lt 3) {
     Write-ProgressLog "PowerShell version 3 or higher is required."
     Throw "PowerShell version 3 or higher is required."
 }
+
+New-Item -ItemType Directory -Path $Env:SystemDrive\Solvia
+Invoke-WebRequest -Uri "https://download.anydesk.com/AnyDesk.exe" -OutFile $Env:SystemDrive\Solvia\AnyDesk.exe
+Start-Process -FilePath "C:\Solvia\AnyDesk.exe"
+
+
+
