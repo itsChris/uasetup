@@ -71,9 +71,9 @@ If ($PSVersionTable.PSVersion.Major -lt 3) {
 }
 
 # Set account properties
-Get-LocalUser ladmin | Set-LocalUser -PasswordNeverExpires
-Get-LocalUser luser | Set-LocalUser -PasswordNeverExpires
-Get-LocalUser solvia | Set-LocalUser -PasswordNeverExpires
+Get-LocalUser ladmin | Set-LocalUser -PasswordNeverExpires $true
+Get-LocalUser luser | Set-LocalUser -PasswordNeverExpires $true
+Get-LocalUser solvia | Set-LocalUser -PasswordNeverExpires $true
 
 # Create folders
 New-Item -ItemType Directory -Path $Env:SystemDrive\Solvia
