@@ -70,10 +70,22 @@ If ($PSVersionTable.PSVersion.Major -lt 3) {
     Throw "PowerShell version 3 or higher is required."
 }
 
+# Set account properties
+Get-LocalUser ladmin | Set-LocalUser -PasswordNeverExpires
+Get-LocalUser luser | Set-LocalUser -PasswordNeverExpires
+Get-LocalUser solvia | Set-LocalUser -PasswordNeverExpires
+
+# Create folders
 New-Item -ItemType Directory -Path $Env:SystemDrive\Solvia
 
+# Download and start AnyDesk
 Invoke-WebRequest -Uri "https://files.solvia.ch/AnyDesk_Custom_Client-Solvia.exe" -OutFile $Env:SystemDrive\Solvia\AnyDesk.exe
+Infoke-WebReqeust -Uri "https://download.anydesk.com/AnyDesk.exe" -OutFile $Env:SystemDrive\Solvia\AnyDeskFull.exe
+
 Start-Process -FilePath "C:\Solvia\AnyDesk.exe"
+
+# Start a shell (will run as system account!)
+Start-Process PowerShell
 
 Write-Host "Press any key to terminate the script"
 $null = [Console]::ReadKey($true)
