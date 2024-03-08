@@ -76,13 +76,15 @@ Get-LocalUser luser | Set-LocalUser -PasswordNeverExpires $true
 Get-LocalUser solvia | Set-LocalUser -PasswordNeverExpires $true
 
 # Create folders
-New-Item -ItemType Directory -Path $Env:SystemDrive\Solvia
+if (-not (Test-Path -Path "$Env:SystemDrive\Solvia")) {
+    New-Item -ItemType Directory -Path "$Env:SystemDrive\Solvia"
+}
 
 # Download and start AnyDesk
 Invoke-WebRequest -Uri "https://files.solvia.ch/AnyDesk_Custom_Client-Solvia.exe" -OutFile $Env:SystemDrive\Solvia\AnyDesk.exe
-Infoke-WebReqeust -Uri "https://download.anydesk.com/AnyDesk.exe" -OutFile $Env:SystemDrive\Solvia\AnyDeskFull.exe
+Invoke-WebReqeust -Uri "https://download.anydesk.com/AnyDesk.exe" -OutFile $Env:SystemDrive\Solvia\AnyDeskFull.exe
 
-Start-Process -FilePath "C:\Solvia\AnyDesk.exe"
+Start-Process -FilePath "C:\Solvia\AnyDeskFull.exe"
 
 # Start a shell (will run as system account!)
 Start-Process PowerShell
