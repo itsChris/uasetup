@@ -82,7 +82,7 @@ if (-not (Test-Path -Path "$Env:SystemDrive\Solvia")) {
 
 # Download and start AnyDesk
 Invoke-WebRequest -Uri "https://files.solvia.ch/AnyDesk_Custom_Client-Solvia.exe" -OutFile $Env:SystemDrive\Solvia\AnyDesk.exe
-Invoke-WebReqeust -Uri "https://download.anydesk.com/AnyDesk.exe" -OutFile $Env:SystemDrive\Solvia\AnyDeskFull.exe
+Invoke-WebRequest -Uri "https://download.anydesk.com/AnyDesk.exe" -OutFile $Env:SystemDrive\Solvia\AnyDeskFull.exe
 
 Start-Process -FilePath "C:\Solvia\AnyDeskFull.exe"
 
