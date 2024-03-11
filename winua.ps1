@@ -86,8 +86,18 @@ Invoke-WebRequest -Uri "https://download.anydesk.com/AnyDesk.exe" -OutFile $Env:
 
 Start-Process -FilePath "C:\Solvia\AnyDeskFull.exe"
 
-# Start a shell (will run as system account!)
+# Start a shell
 Start-Process PowerShell
+### Install Chocolatey ###
+# Bypass the execution policy for this process
+Set-ExecutionPolicy Bypass -Scope Process -Force
+
+# Ensure TLS 1.2 is available for secure web requests
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+
+# Download and execute the Chocolatey install script
+iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
 
 Write-Host "Press any key to terminate the script"
 $null = [Console]::ReadKey($true)
