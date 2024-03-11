@@ -98,6 +98,5 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 # Download and execute the Chocolatey install script
 iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
-
 Write-Host "Press any key to terminate the script"
 $null = [Console]::ReadKey($true)
