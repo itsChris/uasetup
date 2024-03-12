@@ -98,5 +98,10 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 # Download and execute the Chocolatey install script
 iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
+# Download OneDriveKiller (UnDrive)
+Invoke-WebRequest -Uri "https://files.solvia.ch/OneDriveKiller/SolviaOneDriveKiller.zip" -OutFile $Env:SystemDrive\Solvia\SolviaOneDriveKiller.zip
+Expand-Archive -Path "$Env:SystemDrive\Solvia\SolviaOneDriveKiller.zip" -DestinationPath "$Env:SystemDrive\Solvia"
+
+
 Write-Host "Press any key to terminate the script"
 $null = [Console]::ReadKey($true)
