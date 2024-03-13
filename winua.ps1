@@ -32,6 +32,20 @@ Function Print-Welcome {
     info@solvia.ch" -ForegroundColor Cyan
 
 }
+
+Function CreatePassword {
+    $passwordLength = 16
+    $specialChar = '$'
+    $charsForPassword = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    
+    # Generate random alphanumeric characters for the middle part
+    $randomChars = -join (1..($passwordLength - 2) | ForEach-Object { Get-Random -InputObject $charsForPassword.ToCharArray() })
+    
+    # Assemble the password with $ at the beginning and end
+    $password = $specialChar + $randomChars + $specialChar
+
+    return $password
+}
 # Setup error handling.
 Trap {
     $_
@@ -84,11 +98,15 @@ if (-not (Test-Path -Path "$Env:SystemDrive\Solvia")) {
 Invoke-WebRequest -Uri "https://files.solvia.ch/AnyDesk_Custom_Client-Solvia.exe" -OutFile $Env:SystemDrive\Solvia\AnyDesk.exe
 Invoke-WebRequest -Uri "https://download.anydesk.com/AnyDesk.exe" -OutFile $Env:SystemDrive\Solvia\AnyDeskFull.exe
 
-Start-Process -FilePath "C:\Solvia\AnyDeskFull.exe"
+Start-Process -FilePath "C:\Solvia\AnyDeskFull.exe" -ArgumentList "--install '$env:ProgramFiles(x86)\AnyDesk' --start-with-win --silent --create-shortcuts --create-desktop-icon" -Wait
+$password = CreatePassword 
 
-# Start a shell
-Start-Process PowerShell
+$password = Start-Process -FilePath "C:\Install\AnyDesk\Here\AnyDesk.exe" -ArgumentList "--set-password" -Wait -NoNewWindow -RedirectStandardInput
+
+Write-Host "Please note this password: $password"
+
 ### Install Chocolatey ###
+
 # Bypass the execution policy for this process
 Set-ExecutionPolicy Bypass -Scope Process -Force
 
@@ -102,6 +120,8 @@ iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocola
 Invoke-WebRequest -Uri "https://files.solvia.ch/OneDriveKiller/SolviaOneDriveKiller.zip" -OutFile $Env:SystemDrive\Solvia\SolviaOneDriveKiller.zip
 Expand-Archive -Path "$Env:SystemDrive\Solvia\SolviaOneDriveKiller.zip" -DestinationPath "$Env:SystemDrive\Solvia"
 
+# Start a shell
+Start-Process PowerShell
 
 Write-Host "Press any key to terminate the script"
 $null = [Console]::ReadKey($true)
