@@ -98,7 +98,7 @@ try {
         Log-Event "Folder $solviaFolderPath created." "Information"
     }
 } catch {
-    Log-Event "Failed to create folder $solviaFolderPath: $_" "Error"
+    Log-Event "Failed to create folder `${solviaFolderPath}: $_" "Error"
     Exit 4
 }
 
@@ -129,11 +129,20 @@ try {
 try {
     Set-ExecutionPolicy Bypass -Scope Process -Force
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
-    iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
     Log-Event "Chocolatey installed." "Information"
 } catch {
     Log-Event "Chocolatey installation failed: $_" "Error"
     Exit 6
+}
+
+# Download HPIA
+try {
+    Invoke-WebRequest -Uri "https://hpia.hpcloud.hp.com/downloads/hpia/hp-hpia-5.3.0.exe" -OutFile "$solviaFolderPath\hp-hpia-5.3.0.exe" -ErrorAction Stop
+    Log-Event "HPIA downloaded and installed." "Information"
+} catch {
+    Log-Event "HPIA download or installation failed: $_" "Error"
+    Exit 7
 }
 
 # End of Script Prompt
