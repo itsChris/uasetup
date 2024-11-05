@@ -97,6 +97,7 @@ if (-not (Test-Path -Path "$Env:SystemDrive\Solvia")) {
 # Download and start AnyDesk
 Invoke-WebRequest -Uri "https://files.solvia.ch/AnyDesk_Custom_Client-Solvia.exe" -OutFile $Env:SystemDrive\Solvia\AnyDesk.exe
 Invoke-WebRequest -Uri "https://download.anydesk.com/AnyDesk.exe" -OutFile $Env:SystemDrive\Solvia\AnyDeskFull.exe
+Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/rustdesk-1.3.2-x86_64.msi" -OutFile $Env:SystemDrive\Solvia\rustdesk-1.3.2-x86_64.msi
 
 Start-Process -FilePath "C:\Solvia\AnyDeskFull.exe" -ArgumentList "--install '$env:ProgramFiles(x86)\AnyDesk' --start-with-win --silent --create-shortcuts --create-desktop-icon" -Wait
 $password = CreatePassword 
