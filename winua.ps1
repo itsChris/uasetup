@@ -97,6 +97,10 @@ if (-not (Test-Path -Path "$Env:SystemDrive\Solvia")) {
 # Download and start AnyDesk
 Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/rustdesk-1.3.2-x86_64.msi" -OutFile $Env:SystemDrive\Solvia\rustdesk-1.3.2-x86_64.msi
 
+# Install RustDesk silently
+Start-Process -FilePath "$Env:SystemDrive\Solvia\rustdesk-1.3.2-x86_64.msi" -ArgumentList "/quiet /norestart" -Wait
+
+
 # Start-Process -FilePath "C:\Solvia\AnyDeskFull.exe" -ArgumentList "--install '$env:ProgramFiles(x86)\AnyDesk' --start-with-win --silent --create-shortcuts --create-desktop-icon" -Wait
 $password = CreatePassword 
 
