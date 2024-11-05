@@ -100,12 +100,9 @@ Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/rustdesk-1.3.2-x86_64.msi" -
 Start-Process -FilePath "C:\Solvia\AnyDeskFull.exe" -ArgumentList "--install '$env:ProgramFiles(x86)\AnyDesk' --start-with-win --silent --create-shortcuts --create-desktop-icon" -Wait
 $password = CreatePassword 
 
-$password = Start-Process -FilePath "C:\Install\AnyDesk\Here\AnyDesk.exe" -ArgumentList "--set-password" -Wait -NoNewWindow -RedirectStandardInput
-
 Write-Host "Please note this password: $password"
 
 ### Install Chocolatey ###
-
 # Bypass the execution policy for this process
 Set-ExecutionPolicy Bypass -Scope Process -Force
 
@@ -114,10 +111,6 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 
 # Download and execute the Chocolatey install script
 iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-
-# Download OneDriveKiller (UnDrive)
-Invoke-WebRequest -Uri "https://files.solvia.ch/OneDriveKiller/SolviaOneDriveKiller.zip" -OutFile $Env:SystemDrive\Solvia\SolviaOneDriveKiller.zip
-Expand-Archive -Path "$Env:SystemDrive\Solvia\SolviaOneDriveKiller.zip" -DestinationPath "$Env:SystemDrive\Solvia"
 
 # Start a shell
 Start-Process PowerShell
