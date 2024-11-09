@@ -33,6 +33,7 @@ Function CreatePassword {
 }
 
 # Function to Log to a File
+# Function to Log to a File and Display with Write-Host
 Function Log-Event {
     param (
         [string]$message,
@@ -51,6 +52,9 @@ Function Log-Event {
 
     # Write the log entry to the file
     Add-Content -Path $logFilePath -Value $logEntry
+
+    # Display the log entry on the console
+    Write-Host "$logEntry" -ForegroundColor Cyan
 }
 
 # Initial Error Handling
@@ -59,6 +63,7 @@ Trap {
     Exit 1
 }
 $ErrorActionPreference = "Stop"
+
 
 
 # Print Welcome
