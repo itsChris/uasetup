@@ -32,18 +32,25 @@ Function CreatePassword {
     return $specialChar + $randomChars + $specialChar
 }
 
-# Function to Log to Event Viewer
+# Function to Log to a File
 Function Log-Event {
     param (
         [string]$message,
         [string]$entryType = "Information"
     )
-    $EventSource = "Powershell CLI Setup Script"
-    # Ensure Event Log source exists
-    If (-not [System.Diagnostics.EventLog]::SourceExists($EventSource)) {
-        New-EventLog -LogName Application -Source $EventSource
+    # Define log file path with timestamp
+    $logFilePath = "$Env:SystemDrive\Solvia\$(Get-Date -Format 'yyyyMMdd-HHmmss')-SolviaWinUA.log"
+
+    # Ensure the directory exists
+    if (-not (Test-Path -Path "$Env:SystemDrive\Solvia")) {
+        New-Item -ItemType Directory -Path "$Env:SystemDrive\Solvia" | Out-Null
     }
-    Write-EventLog -LogName Application -Source $EventSource -EntryType $entryType -EventId 1 -Message $message
+
+    # Construct the log entry with timestamp and entry type
+    $logEntry = "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') [$entryType] $message"
+
+    # Write the log entry to the file
+    Add-Content -Path $logFilePath -Value $logEntry
 }
 
 # Initial Error Handling
@@ -52,6 +59,7 @@ Trap {
     Exit 1
 }
 $ErrorActionPreference = "Stop"
+
 
 # Print Welcome
 Print-Welcome
