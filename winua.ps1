@@ -86,7 +86,7 @@ foreach ($user in $users) {
         Get-LocalUser $user | Set-LocalUser -PasswordNeverExpires $true
         Log-Event "Password expiration disabled for user $user." "Information"
     } catch {
-        Log-Event "Failed to set password expiration for user $user: $(${_})" "Warning"
+        Log-Event "Failed to set password expiration for user ${user}: $_" "Warning"
     }
 }
 
@@ -98,7 +98,7 @@ try {
         Log-Event "Folder $solviaFolderPath created." "Information"
     }
 } catch {
-    Log-Event "Failed to create folder `${solviaFolderPath}: $_" "Error"
+    Log-Event "Failed to create folder ${solviaFolderPath}: $_" "Error"
     Exit 4
 }
 
