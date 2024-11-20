@@ -158,6 +158,19 @@ try {
     Exit 7
 }
 
+# Download Atera Agent and install it silently
+try {
+    $ateraInstaller = "$solviaFolderPath\atera-setup-unassigned.msi"
+    Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/atera-setup-unassigned.msi" -OutFile $ateraInstaller -ErrorAction Stop
+    Log-Event "Atera Agent downloaded to $ateraInstaller." "Information"
+    # Silent installation of Atera Agent
+    Start-Process -FilePath $ateraInstaller -ArgumentList "/quiet /norestart" -Wait
+    Log-Event "Atera Agent installed silently." "Information"
+} catch {
+    Log-Event "Atera Agent installation failed: $_" "Error"
+    Exit 8
+}
+
 # End of Script Prompt
 Write-Host "Press any key to terminate the script"
 $null = [Console]::ReadKey($true)
