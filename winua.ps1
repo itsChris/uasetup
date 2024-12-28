@@ -3,6 +3,9 @@
 # https://www.solvia.ch
 # ----------------------------------------------
 
+# Define a single log file path for the execution of the script
+$ExecutionLogFile = "$Env:SystemDrive\Solvia\SolviaWinUA-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
+
 # Print Welcome Message
 Function Print-Welcome {
     Write-Host "
@@ -32,16 +35,12 @@ Function CreatePassword {
     return $specialChar + $randomChars + $specialChar
 }
 
-# Function to Log to a File
 # Function to Log to a File and Display with Write-Host
 Function Log-Event {
     param (
         [string]$message,
         [string]$entryType = "Information"
     )
-    # Define log file path with timestamp
-    $logFilePath = "$Env:SystemDrive\Solvia\$(Get-Date -Format 'yyyyMMdd-HHmmss')-SolviaWinUA.log"
-
     # Ensure the directory exists
     if (-not (Test-Path -Path "$Env:SystemDrive\Solvia")) {
         New-Item -ItemType Directory -Path "$Env:SystemDrive\Solvia" | Out-Null
@@ -50,8 +49,8 @@ Function Log-Event {
     # Construct the log entry with timestamp and entry type
     $logEntry = "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') [$entryType] $message"
 
-    # Write the log entry to the file
-    Add-Content -Path $logFilePath -Value $logEntry
+    # Write the log entry to the single execution-time log file
+    Add-Content -Path $ExecutionLogFile -Value $logEntry
 
     # Display the log entry on the console
     Write-Host "$logEntry" -ForegroundColor Cyan
@@ -63,8 +62,6 @@ Trap {
     Exit 1
 }
 $ErrorActionPreference = "Stop"
-
-
 
 # Print Welcome
 Print-Welcome
@@ -117,8 +114,8 @@ try {
 
 # Download RustDesk and install it silently
 try {
-    $rustdeskInstaller = "$solviaFolderPath\rustdesk-1.3.2-x86_64.msi"
-    Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/rustdesk-1.3.2-x86_64.msi" -OutFile $rustdeskInstaller -ErrorAction Stop
+    $rustdeskInstaller = "$solviaFolderPath\rustdesk-1.3.5-x86_64.msi"
+    Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/rustdesk-1.3.5-x86_64.msi" -OutFile $rustdeskInstaller -ErrorAction Stop
     Log-Event "RustDesk downloaded to $rustdeskInstaller." "Information"
     
     # Silent installation of RustDesk
@@ -151,7 +148,7 @@ try {
 
 # Download HPIA
 try {
-    Invoke-WebRequest -Uri "https://hpia.hpcloud.hp.com/downloads/hpia/hp-hpia-5.3.0.exe" -OutFile "$solviaFolderPath\hp-hpia-5.3.0.exe" -ErrorAction Stop
+    Invoke-WebRequest -Uri "https://hpia.hpcloud.hp.com/downloads/hpia/hp-hpia-5.3.1.exe" -OutFile "$solviaFolderPath\hp-hpia-5.3.1.exe" -ErrorAction Stop
     Log-Event "HPIA downloaded and installed." "Information"
 } catch {
     Log-Event "HPIA download or installation failed: $_" "Error"
