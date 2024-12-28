@@ -126,8 +126,8 @@ try {
 
 # Download RustDesk and install it silently
 try {
-    $rustdeskInstaller = "$solviaFolderPath\rustdesk-1.3.5-x86_64.msi"
-    Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/rustdesk-1.3.5-x86_64.msi" -OutFile $rustdeskInstaller -ErrorAction Stop
+    $rustdeskInstaller = "$solviaFolderPath\rustdesk-1.3.6-x86_64.msi"
+    Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/rustdesk-1.3.6-x86_64.msi" -OutFile $rustdeskInstaller -ErrorAction Stop
     Log-Event "RustDesk downloaded to $rustdeskInstaller." "Information"
     
     # Silent installation of RustDesk
