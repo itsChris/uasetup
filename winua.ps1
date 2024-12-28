@@ -56,6 +56,18 @@ Function Log-Event {
     Write-Host "$logEntry" -ForegroundColor Cyan
 }
 
+# Function to Download OfficeSetup
+Function Download-OfficeSetup {
+    try {
+        $officeSetupPath = "$Env:SystemDrive\Solvia\OfficeSetup.exe"
+        Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/OfficeSetup.exe" -OutFile $officeSetupPath -ErrorAction Stop
+        Log-Event "OfficeSetup.exe downloaded to $officeSetupPath." "Information"
+    } catch {
+        Log-Event "Failed to download OfficeSetup.exe: $_" "Error"
+        Exit 9
+    }
+}
+
 # Initial Error Handling
 Trap {
     Log-Event "Critical error: $_" "Error"
@@ -167,6 +179,9 @@ try {
     Log-Event "Atera Agent installation failed: $_" "Error"
     Exit 8
 }
+
+# Download OfficeSetup
+Download-OfficeSetup
 
 # End of Script Prompt
 Write-Host "Press any key to terminate the script"
