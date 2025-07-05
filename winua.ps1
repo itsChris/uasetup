@@ -60,8 +60,11 @@ Function Log-Event {
 Function Download-OfficeSetup {
     try {
         $officeSetupPath = "$Env:SystemDrive\Solvia\OfficeSetup.exe"
+        $officeSetupDEPath = "$Env:SystemDrive\Solvia\OfficeSetup-de.exe"
         Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/OfficeSetup.exe" -OutFile $officeSetupPath -ErrorAction Stop
+        Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/OfficeSetup-de.exe" -OutFile $officeSetupDEPath -ErrorAction Stop
         Log-Event "OfficeSetup.exe downloaded to $officeSetupPath." "Information"
+        Log-Event "OfficeSetupDE.exe downloaded to $officeSetupDEPath." "Information"
     } catch {
         Log-Event "Failed to download OfficeSetup.exe: $_" "Error"
         Exit 9
