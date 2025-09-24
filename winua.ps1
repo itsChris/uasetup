@@ -183,6 +183,16 @@ try {
     Exit 8
 }
 
+# Download WireGuard Client
+try {
+    $wireguardInstaller = "$solviaFolderPath\wireguard-amd64-0.5.3.msi"
+    Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/wireguard-amd64-0.5.3.msi" -OutFile $wireguardInstaller -ErrorAction Stop
+    Log-Event "WireGuard downloaded to $wireguardInstaller." "Information"
+} catch {
+    Log-Event "WireGuard Client download failed: $_" "Error"
+    Exit 8
+}
+
 # Download OfficeSetup
 Download-OfficeSetup
 
