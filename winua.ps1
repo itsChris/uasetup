@@ -193,6 +193,17 @@ try {
     Exit 8
 }
 
+
+try {
+    Log-Event "Trying to remove OneDrive from ntuser.dat (default user profile) " "Information"
+    reg load "hku\Default" "C:\Users\Default\NTUSER.DAT"
+    reg delete "HKEY_USERS\Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f
+    reg unload "hku\Default"
+} catch {
+    Log-Event "WireGuard Client download failed: $_" "Error"
+    exit 9
+]
+
 # Download OfficeSetup
 Download-OfficeSetup
 
