@@ -202,7 +202,7 @@ try {
 } catch {
     Log-Event "WireGuard Client download failed: $_" "Error"
     exit 9
-]
+}
 
 # Download OfficeSetup
 Download-OfficeSetup
