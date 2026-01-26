@@ -64,19 +64,14 @@ Function Download-OfficeSetup {
         Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/OfficeSetup.exe" -OutFile $officeSetupPath -ErrorAction Stop
         Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/OfficeSetup-de.exe" -OutFile $officeSetupDEPath -ErrorAction Stop
         Log-Event "OfficeSetup.exe downloaded to $officeSetupPath." "Information"
-        Log-Event "OfficeSetupDE.exe downloaded to $officeSetupDEPath." "Information"
+        Log-Event "OfficeSetup-de.exe downloaded to $officeSetupDEPath." "Information"
     } catch {
-        Log-Event "Failed to download OfficeSetup.exe: $_" "Error"
-        Exit 9
+        Log-Event "Failed to download OfficeSetup: $_" "Warning"
     }
 }
 
-# Initial Error Handling
-Trap {
-    Log-Event "Critical error: $_" "Error"
-    Exit 1
-}
-$ErrorActionPreference = "Stop"
+# Set default error handling - individual try/catch blocks handle errors
+$ErrorActionPreference = "Continue"
 
 # Print Welcome
 Print-Welcome
@@ -127,18 +122,30 @@ try {
     Exit 4
 }
 
+# Download Atera Agent and install it silently (installed early for RMM visibility)
+try {
+    $ateraInstaller = "$solviaFolderPath\atera-setup-unassigned.msi"
+    Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/atera-setup-unassigned.msi" -OutFile $ateraInstaller -ErrorAction Stop
+    Log-Event "Atera Agent downloaded to $ateraInstaller." "Information"
+    # Silent installation of Atera Agent
+    Start-Process -FilePath msiexec.exe -ArgumentList "/i `"$ateraInstaller`" /quiet /norestart" -Wait
+    Log-Event "Atera Agent installed silently." "Information"
+} catch {
+    Log-Event "Atera Agent installation failed: $_" "Error"
+    Exit 5
+}
+
 # Download RustDesk and install it silently
 try {
     $rustdeskInstaller = "$solviaFolderPath\rustdesk-1.4.2-x86_64.msi"
     Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/rustdesk-1.4.2-x86_64.msi" -OutFile $rustdeskInstaller -ErrorAction Stop
     Log-Event "RustDesk downloaded to $rustdeskInstaller." "Information"
-    
+
     # Silent installation of RustDesk
-    Start-Process -FilePath $rustdeskInstaller -ArgumentList "/quiet /norestart" -Wait
+    Start-Process -FilePath msiexec.exe -ArgumentList "/i `"$rustdeskInstaller`" /quiet /norestart" -Wait
     Log-Event "RustDesk installed silently." "Information"
 } catch {
-    Log-Event "RustDesk download or installation failed: $_" "Error"
-    Exit 5
+    Log-Event "RustDesk download or installation failed: $_" "Warning"
 }
 
 # Generate and display password
@@ -147,7 +154,7 @@ try {
     Write-Host "Please note this password: $password"
     Log-Event "Generated a secure password." "Information"
 } catch {
-    Log-Event "Failed to generate password: $_" "Error"
+    Log-Event "Failed to generate password: $_" "Warning"
 }
 
 # Install Chocolatey
@@ -157,30 +164,15 @@ try {
     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
     Log-Event "Chocolatey installed." "Information"
 } catch {
-    Log-Event "Chocolatey installation failed: $_" "Error"
-    Exit 6
+    Log-Event "Chocolatey installation failed: $_" "Warning"
 }
 
 # Download HPIA
 try {
     Invoke-WebRequest -Uri "https://hpia.hpcloud.hp.com/downloads/hpia/hp-hpia-5.3.2.exe" -OutFile "$solviaFolderPath\hp-hpia-5.3.2.exe" -ErrorAction Stop
-    Log-Event "HPIA downloaded and installed." "Information"
+    Log-Event "HPIA downloaded." "Information"
 } catch {
-    Log-Event "HPIA download or installation failed: $_" "Error"
-    Exit 7
-}
-
-# Download Atera Agent and install it silently
-try {
-    $ateraInstaller = "$solviaFolderPath\atera-setup-unassigned.msi"
-    Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/atera-setup-unassigned.msi" -OutFile $ateraInstaller -ErrorAction Stop
-    Log-Event "Atera Agent downloaded to $ateraInstaller." "Information"
-    # Silent installation of Atera Agent
-    Start-Process -FilePath $ateraInstaller -ArgumentList "/quiet /norestart" -Wait
-    Log-Event "Atera Agent installed silently." "Information"
-} catch {
-    Log-Event "Atera Agent installation failed: $_" "Error"
-    Exit 8
+    Log-Event "HPIA download failed: $_" "Warning"
 }
 
 # Download WireGuard Client
@@ -189,19 +181,18 @@ try {
     Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/wireguard-amd64-0.5.3.msi" -OutFile $wireguardInstaller -ErrorAction Stop
     Log-Event "WireGuard downloaded to $wireguardInstaller." "Information"
 } catch {
-    Log-Event "WireGuard Client download failed: $_" "Error"
-    Exit 8
+    Log-Event "WireGuard Client download failed: $_" "Warning"
 }
 
-
+# Remove OneDrive auto-start from default user profile
 try {
-    Log-Event "Trying to remove OneDrive from ntuser.dat (default user profile) " "Information"
+    Log-Event "Trying to remove OneDrive from ntuser.dat (default user profile)." "Information"
     reg load "hku\Default" "C:\Users\Default\NTUSER.DAT"
     reg delete "HKEY_USERS\Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f
     reg unload "hku\Default"
+    Log-Event "OneDrive auto-start removed from default user profile." "Information"
 } catch {
-    Log-Event "WireGuard Client download failed: $_" "Error"
-    exit 9
+    Log-Event "Failed to remove OneDrive from default user profile: $_" "Warning"
 }
 
 # Download OfficeSetup
