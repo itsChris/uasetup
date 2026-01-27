@@ -14,6 +14,9 @@ Both scripts require Administrator privileges and PowerShell 3+.
 # Run the main setup script (must be run as Administrator)
 powershell -ExecutionPolicy Bypass -File winua.ps1
 
+# Run directly from GitHub
+irm https://raw.githubusercontent.com/itsChris/uasetup/main/winua.ps1 | iex
+
 # Run the dummy/test script
 powershell -ExecutionPolicy Bypass -File dummy-powershell.ps1
 ```
@@ -41,10 +44,10 @@ The script executes sequentially. Only critical failures cause exit; non-critica
 ### Software Installed (in order)
 Downloads come from `https://sw-deploy.solvia.ch/` unless noted:
 1. Atera Agent (RMM) - installed first for early visibility
-2. RustDesk (remote desktop)
+2. RustDesk 1.4.5 (remote desktop)
 3. Chocolatey (package manager) - from community.chocolatey.org
-4. HP Image Assistant (HPIA) - from hpia.hpcloud.hp.com
-5. WireGuard (VPN client) - downloaded only, not installed
+4. HP Image Assistant (HPIA) 5.3.3 - from hpia.hpcloud.hp.com
+5. WireGuard 0.5.3 (VPN client) - downloaded only, not installed
 6. Microsoft Office Setup (EN and DE) - downloaded only
 
 ### User Configuration
