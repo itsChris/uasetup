@@ -184,6 +184,15 @@ try {
     Log-Event "WireGuard Client download failed: $_" "Warning"
 }
 
+# Download Autologon-off command
+try {
+    $autologonOffPath = "$solviaFolderPath\Autologon-off.cmd"
+    Invoke-WebRequest -Uri "https://sw-deploy.solvia.ch/Autologon-off.cmd" -OutFile $autologonOffPath -ErrorAction Stop
+    Log-Event "Autologon-off.cmd downloaded to $autologonOffPath." "Information"
+} catch {
+    Log-Event "Autologon-off.cmd download failed: $_" "Warning"
+}
+
 # Remove OneDrive auto-start from default user profile
 try {
     Log-Event "Trying to remove OneDrive from ntuser.dat (default user profile)." "Information"
