@@ -169,7 +169,7 @@ try {
 
 # Download HPIA
 try {
-    Invoke-WebRequest -Uri "https://hpia.hpcloud.hp.com/downloads/hpia/hp-hpia-5.3.3.exe" -OutFile "$solviaFolderPath\hp-hpia-5.3.3.exe" -ErrorAction Stop
+    Invoke-WebRequest -Uri "https://hpia.hpcloud.hp.com/downloads/hpia/hp-hpia-5.3.6.exe" -OutFile "$solviaFolderPath\hp-hpia-5.3.6.exe" -ErrorAction Stop
     Log-Event "HPIA downloaded." "Information"
 } catch {
     Log-Event "HPIA download failed: $_" "Warning"
