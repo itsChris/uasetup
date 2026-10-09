@@ -51,7 +51,9 @@ Downloads come from `https://sw-deploy.solvia.ch/` unless noted:
 6. Microsoft Office Setup (EN and DE) - downloaded only
 
 ### User Configuration
-Disables password expiration for: `ladmin`, `luser`, `solvia`
+Sets the maximum password age to unlimited machine-wide (`net accounts /maxpwage:unlimited`) and disables
+password expiration for `ladmin`, `luser`, `solvia` (verified by reading `PasswordExpires` back). The unattend
+XML must not rely on `wmic` for this: WMIC is disabled on Windows 11 24H2 and removed in 25H2.
 
 ### Registry Modifications
 Removes OneDrive auto-start from default user profile (`NTUSER.DAT`)

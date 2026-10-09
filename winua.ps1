@@ -99,14 +99,30 @@ try {
     Exit 3
 }
 
+# Disable password expiration machine-wide (covers local accounts created later, too)
+try {
+    $netAccountsOutput = & net.exe accounts /maxpwage:unlimited 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        throw "net accounts exited with code $($LASTEXITCODE): $netAccountsOutput"
+    }
+    Log-Event "Maximum password age set to unlimited (net accounts)." "Information"
+} catch {
+    Log-Event "Failed to set maximum password age: $_" "Warning"
+}
+
 # Set account properties for specified users
 $users = @("ladmin", "luser", "solvia")
 foreach ($user in $users) {
     try {
-        Get-LocalUser $user | Set-LocalUser -PasswordNeverExpires $true
-        Log-Event "Password expiration disabled for user $user." "Information"
+        Set-LocalUser -Name $user -PasswordNeverExpires $true -ErrorAction Stop
+        # Read the state back so the log reports what was measured, not what was attempted
+        $passwordExpires = (Get-LocalUser -Name $user -ErrorAction Stop).PasswordExpires
+        if ($null -ne $passwordExpires) {
+            throw "PasswordExpires is still set to $passwordExpires after Set-LocalUser."
+        }
+        Log-Event "Password expiration disabled for user $user (verified)." "Information"
     } catch {
-        Log-Event "Failed to set password expiration for user $($user): $_" "Warning"
+        Log-Event "Failed to disable password expiration for user $($user): $_" "Warning"
     }
 }
 
